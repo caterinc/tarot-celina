@@ -202,24 +202,32 @@ const CONSULTAS = [
   { name:'Cartas Canalizadas',       desc:'Mensagens espirituais',       price:6000,  label:'R$ 60'  },
 ];
 const ESPIRITUAIS = [
-  { name:'Atração Irresistível', desc:'+ Guia Completo', price:23000, label:'R$ 230', spiritual:true },
-  { name:'Amarração Amorosa',    desc:'+ Guia Completo', price:24700, label:'R$ 247', spiritual:true },
+  { name:'Atração Irresistível', desc:'+ Guia Completo', price:23000, label:'R$ 230', spiritual:true, whatsapp:true },
+  { name:'Amarração Amorosa',    desc:'+ Guia Completo', price:24700, label:'R$ 247', spiritual:true, whatsapp:true },
 ];
+
+const WA_NUMBER = '5511999999999'; // trocar pelo número da Celina com DDI+DDD
 
 function buildGrid(plans, id) {
   const el = document.getElementById(id);
   plans.forEach(p => {
     const d = document.createElement('div');
     d.className = 'plan' + (p.featured ? ' featured' : '') + (p.spiritual ? ' spiritual' : '');
+    const btnLabel = p.whatsapp ? 'Contratar via WhatsApp' : 'Pagar com PIX';
     d.innerHTML =
       (p.featured ? '<span class="badge">Mais escolhida</span>' : '') +
       `<div class="plan-name">${p.name}</div>` +
       `<div class="plan-desc">${p.desc}</div>` +
       `<div class="plan-price">${p.label}</div>` +
-      `<button class="plan-btn">Pagar com PIX</button>`;
-    d.addEventListener('click', () => pay(p, d));
+      `<button class="plan-btn">${btnLabel}</button>`;
+    d.addEventListener('click', () => p.whatsapp ? openWhatsApp(p) : pay(p, d));
     el.appendChild(d);
   });
+}
+
+function openWhatsApp(plan) {
+  const msg = encodeURIComponent(`Olá Celina! Quero contratar: ${plan.name} (${plan.label})`);
+  window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank');
 }
 buildGrid(CONSULTAS,   'grid-c');
 buildGrid(ESPIRITUAIS, 'grid-e');
